@@ -1,5 +1,5 @@
 {
-  "name": "re-mind",
+  "name": "mindcraft",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -44,7 +44,8 @@
     "react-native-youtube-iframe": "^2.2.2",
     "react-redux": "^8.0.1",
     "react-simple-timestamp-to-date": "^1.0.3",
-    "redux": "^4.2.0"
+    "redux": "^4.2.0",
+    "expo-updates": "~0.14.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
