@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image
 } from "react-native";
 import SimpleDateTime from "react-simple-timestamp-to-date";
 import React, { useState, useEffect } from "react";
@@ -82,14 +83,17 @@ const Card = ({ post, navigation }) => {
         <View
           style={{ width: "90%", flexDirection: "row", alignItems: "center" }}
         >
-          <FontAwesomeIcon
+          <Image
             style={{
-              height: "100%",
+              height:40,
               color: "#767676",
               marginRight: 15,
-              width: "20%",
+              width: 40,
+              borderRadius:100
             }}
-            icon={faUser}
+            source={{
+              uri: post.owner.image
+            }}
           />
           <Text>
             {post.owner.name}{" "}

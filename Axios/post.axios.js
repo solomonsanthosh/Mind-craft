@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "https://mind-craft-server.herokuapp.com";
+const baseUrl = "http://192.168.0.105:8000";
 
 export const createPost = async (post) => {
   console.log(post);

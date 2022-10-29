@@ -9,6 +9,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
+  Image,
   ActivityIndicator
 } from "react-native";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -135,7 +136,19 @@ const Card = ({ post }) => {
 
   return (
     <View style={styles.card}>
-      <View>
+      <View style={{flexDirection:'row'}}>
+      <Image
+            style={{
+              height:60,
+              color: "#767676",
+              marginRight: 15,
+              width: 60,
+              borderRadius:100
+            }}
+            source={{
+              uri: post.owner.image
+            }}
+          />
         <Text>
           {post.owner.name}{" "}
           <Text style={{ color: "#0089e4" }}>
@@ -165,15 +178,17 @@ const CommentCard = ({ comment }) => {
     <View style={styles.commentCard}>
       <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
         <View>
-          <FontAwesomeIcon
+        <Image
             style={{
-              height: "100%",
+              height:40,
               color: "#767676",
-              marginRight: 20,
-              marginTop: 8,
-              width: "20%",
+              marginRight: 15,
+              width: 40,
+              borderRadius:100
             }}
-            icon={faUser}
+            source={{
+              uri: comment.owner.image
+            }}
           />
         </View>
         <View style={{ width: "90%" }}>

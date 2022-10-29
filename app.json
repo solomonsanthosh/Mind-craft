@@ -6,11 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#051726"
-    },
+    
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -28,7 +24,7 @@
       "package": "com.solosanty.Mindcraft"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
     }
   }
 }
