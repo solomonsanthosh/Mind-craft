@@ -32,7 +32,7 @@ const Coach = ({user}) => {
         email: email,
         description: content,
       };
-      if (content.length > 10) {
+      if (content.length > 0) {
         sendMail(contentMail).then((res) => {
           
           
@@ -44,6 +44,7 @@ const Coach = ({user}) => {
   return (
     <ScrollView>
       <View style={styles.main}>
+                
         {coach && coach.map((coach)=>{
             return(
                 <>

@@ -8,12 +8,10 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
-  RefreshControl
-  
+  RefreshControl,
 } from "react-native";
 
-
-
+import { Checkbox } from "react-native-paper";
 import MyCarousel from "../Components/carousel";
 import { connect } from "react-redux";
 import React, { useState, useEffect } from "react";
@@ -22,26 +20,37 @@ import { getMusic } from "../Axios/music.axios";
 import { getActivity } from "../Axios/activity.axios";
 import { getStory } from "../Axios/post.axios";
 
-
 const Home = ({ user }) => {
   const [refreshing, setRefreshing] = useState(false);
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
   const [music, setMusic] = useState([]);
   const [activity, setActivity] = useState([]);
-  const [story,setStory] = useState([]);
+  const [story, setStory] = useState([]);
+  const [checked, setChecked] = useState([
+    {
+      item: "unchecked",
+    },
+    {
+      item: "unchecked",
+    },
+    {
+      item: "unchecked",
+    },
+    {
+      item: "unchecked",
+    },
+  ]);
   useEffect(() => {
-
     getMusic(user.user.topic).then((res) => {
       setMusic(res.data);
     });
     getActivity(user.user.topic).then((res) => {
       setActivity(res.data);
-
     });
-    getStory(user.user.topic).then((res)=>{
-      setStory(res.data)
-    })
+    getStory(user.user.topic).then((res) => {
+      setStory(res.data);
+    });
   }, [user]);
   const onRefresh = () => {
     setRefreshing(true);
@@ -50,22 +59,20 @@ const Home = ({ user }) => {
     });
     getActivity(user.user.topic).then((res) => {
       setActivity(res.data);
-
     });
-    getStory(user.user.topic).then((res)=>{
-      setStory(res.data)
-    })
+    getStory(user.user.topic).then((res) => {
+      setStory(res.data);
+    });
     setRefreshing(false);
   };
   return (
     <>
       {user.user && (
-        <ScrollView refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <View style={styles.main}>
             <StatusBar backgroundColor="transparent" translucent={true} />
 
@@ -125,9 +132,17 @@ const Home = ({ user }) => {
                   >
                     Today's Activities
                   </Text>
+                  <Text></Text>
                   {activity &&
-                    activity.map((element) => {
-                      return <ActivityCard activity={element} />;
+                    activity.map((element, index) => {
+                      return (
+                        <ActivityCard
+                          activity={element}
+                          index={index}
+                          checked={checked}
+                          setChecked={setChecked}
+                        />
+                      );
                     })}
                 </View>
                 <Text
@@ -140,8 +155,12 @@ const Home = ({ user }) => {
                 >
                   Success Stories
                 </Text>
-              {story && (<MyCarousel story={story}/>)}
-              <Text style={{color:'#707070',fontSize:13,marginVertical:7}}>Swipe left to see more</Text>
+                {story && <MyCarousel story={story} />}
+                <Text
+                  style={{ color: "#707070", fontSize: 13, marginVertical: 7 }}
+                >
+                  Swipe left to see more
+                </Text>
               </View>
             </ImageBackground>
           </View>
@@ -151,10 +170,33 @@ const Home = ({ user }) => {
   );
 };
 
-const ActivityCard = ({ activity }) => {
+const ActivityCard = ({ activity, index, setChecked, checked }) => {
   return (
-    <View style={styles.activityCard}>
-      <Text style={styles.activityText}>{activity.title}</Text>
+    <View style={styles.activityCard} key={index}>
+      {/* <View style={{ flexDirection: "row", alignItems: "center" }}> */}
+        {/* <Checkbox
+          status={checked[index].item == "unchecked" ? "unchecked" : "checked"}
+          onPress={() => {
+            console.log(checked[index]);
+            console.log(checked);
+            var temp = checked;
+            temp[index].item == "unchecked"
+              ? (temp[index].item = "checked")
+              : (temp[index].item = "unchecked");
+            setChecked([
+              checked[index].item == "unchecked"
+                ? (checked[index].item = "checked")
+                : (checked[index].item = "unchecked"),
+            ]);
+            // setChecked(temp)
+            // setChecked({})
+            // setChecked((prev)=>[...prev,index]);
+          }}
+        /> */}
+        <Text style={[styles.activityText, { marginLeft: 10 }]}>
+          {activity.title}
+        </Text>
+      {/* </View> */}
       <Text style={styles.activityText}>{activity.duration}</Text>
     </View>
   );
@@ -197,7 +239,7 @@ const styles = StyleSheet.create({
     // paddingTop: StatusBar.currentHeight,
     backgroundColor: "white",
     height: "100%",
-    paddingBottom:60,
+    paddingBottom: 60,
   },
   image: {
     width: "100%",

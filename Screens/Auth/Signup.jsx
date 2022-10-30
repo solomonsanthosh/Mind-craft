@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { auth } from "../../firebase/firebase";
@@ -33,11 +34,12 @@ const LoginScreen = ({ setUser }) => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [name, setName] = useState("");
-
+  const [loading, setLoading] = useState(false)
   const handleLogin = async () => {
     auth
       .createUserWithEmailAndPassword(email.trim(), password.trim())
       .then((userCredential) => {
+        setLoading(true)
         const user = userCredential.user;
         console.log(user);
 
@@ -49,6 +51,7 @@ const LoginScreen = ({ setUser }) => {
             _id: res.data,
           });
           navigation.push("slider");
+          setLoading(false)
         });
       })
       .catch((error) => {
@@ -98,7 +101,8 @@ const LoginScreen = ({ setUser }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <>
+    {!loading ? <View style={styles.container}>
       <KeyboardAvoidingView
         style={{
           width: "100%",
@@ -153,7 +157,14 @@ const LoginScreen = ({ setUser }) => {
           <Text style={{ color: "#50867a", fontWeight: "700" }}>Sign up</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-    </View>
+    </View>:(<View style={{ flex: 1 }}>
+          <ActivityIndicator
+            style={{ flex: 1, alignSelf: "center" }}
+            size="large"
+            color="#0089e4"
+          />
+        </View>)}
+    </>
   );
 };
 

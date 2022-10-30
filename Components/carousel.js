@@ -17,7 +17,7 @@ const MyCarousel = ({ story }) => {
         navigation.push("SingleStory", { story: story });
     }
   const _renderItem = ({ item }) => {
-    console.log(item, "kk");
+  
     return (
       <>
       {item ? (<View

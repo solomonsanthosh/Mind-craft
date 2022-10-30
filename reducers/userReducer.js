@@ -1,17 +1,16 @@
-import { USER } from '../constants';
+import { USER } from "../constants";
 const initialState = {
-user:null
+  user: null,
 };
 const userReducer = (state = initialState, action) => {
-console.log(state);
-switch(action.type) {
-case USER:
-return {
-...state,
-user:action.payload
+  switch (action.type) {
+    case USER:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    default:
+      return state;
+  }
 };
-default:
-return state;
-}
-}
 export default userReducer;

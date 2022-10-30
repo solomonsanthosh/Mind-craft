@@ -22,5 +22,6 @@ if (firebase.apps.length === 0) {
 
 const auth = firebase.auth();
 export const storageRef = firebase.storage().ref();
+export const storage = firebase.storage()
 export { auth };
 

@@ -1,10 +1,8 @@
 import axios from "axios";
-const baseUrl = "http://192.168.0.105:8000";
+const baseUrl = "https://mind-craft-server.herokuapp.com";
 
 export const createUser = async (name, email) => {
-  console.log('====================================');
-  console.log(name,email);
-  console.log('====================================');
+
   return (await axios.post(`${baseUrl}/createuser`, {
     user: {
       email: email,
@@ -14,9 +12,7 @@ export const createUser = async (name, email) => {
 };
 
 export const getSingleUser = async (email) => {
-  console.log('====================================');
-  console.log(email);
-  console.log('====================================');
+
   return await axios.get(`${baseUrl}/getsingleuser/${email}`);
 };
 
