@@ -9,6 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  BackHandler,
+  Alert
 } from "react-native";
 
 import { Checkbox } from "react-native-paper";
@@ -20,7 +22,28 @@ import { getMusic } from "../Axios/music.axios";
 import { getActivity } from "../Axios/activity.axios";
 import { getStory } from "../Axios/post.axios";
 
-const Home = ({ user }) => {
+const Home = ({ user,navigation }) => {
+  useEffect(() => {
+    const backAction = () => {
+      if (!navigation.isFocused()) {
+        return false;
+      }
+  
+      Alert.alert("Hold on!", "Are you sure you want to exit?", [
+        { text: "Cancel" },
+        { text: "Yes", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+  
+    return () => backHandler.remove();
+  }, [navigation]);
+
   const [refreshing, setRefreshing] = useState(false);
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
@@ -174,7 +197,7 @@ const ActivityCard = ({ activity, index, setChecked, checked }) => {
   return (
     <View style={styles.activityCard} key={index}>
       {/* <View style={{ flexDirection: "row", alignItems: "center" }}> */}
-        {/* <Checkbox
+      {/* <Checkbox
           status={checked[index].item == "unchecked" ? "unchecked" : "checked"}
           onPress={() => {
             console.log(checked[index]);
@@ -193,9 +216,9 @@ const ActivityCard = ({ activity, index, setChecked, checked }) => {
             // setChecked((prev)=>[...prev,index]);
           }}
         /> */}
-        <Text style={[styles.activityText, { marginLeft: 10 }]}>
-          {activity.title}
-        </Text>
+      <Text style={[styles.activityText, { marginLeft: 10 }]}>
+        {activity.title}
+      </Text>
       {/* </View> */}
       <Text style={styles.activityText}>{activity.duration}</Text>
     </View>

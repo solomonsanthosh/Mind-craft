@@ -7,19 +7,39 @@ import {
   Image,
   Dimensions,
   KeyboardAvoidingView,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from "../../firebase/firebase";
-
+import { AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { setUser } from "../../actions";
 import { bindActionCreators } from "redux";
 import { getSingleUser } from "../../Axios/user.axios";
 
 const Login = ({ navigation, setUser }) => {
+  useEffect(() => {
+    retrieveData();
+  }, []);
+  const retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("user");
+      if (value !== null) {
+        // We have data!!
+        // console.log(value, "pp");
+        setUser(JSON.parse(value));
+        navigation.push("Tabs");
+      } else {
+        setLoading(false)
+      }
+      
+    } catch (error) {
+      console.log(error);
+      // Error retrieving data
+    }
+  };
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const handleLogin = async () => {
@@ -31,12 +51,15 @@ const Login = ({ navigation, setUser }) => {
         console.log("====================================");
         console.log(email.toLowerCase().trim());
         console.log("====================================");
-        setLoading(true)
+        setLoading(true);
 
-        getSingleUser(email.toLowerCase().trim()).then((res) => {
+        getSingleUser(email.toLowerCase().trim()).then(async (res) => {
           setUser(res.data);
+
+          await AsyncStorage.setItem("user", JSON.stringify(res.data));
+
           navigation.push("Tabs");
-          setLoading(false)
+          setLoading(false);
         });
       })
 

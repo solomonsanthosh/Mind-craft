@@ -1,5 +1,13 @@
 import axios from "axios";
-const baseUrl = "https://mind-craft-server.herokuapp.com";
+const baseUrl = "https://mindcraft-server.onrender.com";
+
+
+
+
+
+
+
+
 
 export const getActivity = async (topic) => {
 

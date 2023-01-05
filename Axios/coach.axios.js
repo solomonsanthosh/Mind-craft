@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "https://mind-craft-server.herokuapp.com";
+const baseUrl = "https://mindcraft-server.onrender.com";
 
 export const getCoach = async () => {
   return await axios.get(`${baseUrl}/getcoach`);

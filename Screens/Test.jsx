@@ -5,6 +5,7 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  AsyncStorage
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { getTest, updateSeverity } from "../Axios/test.axios";
@@ -106,11 +107,11 @@ const Test = ({ navigation, user, setUser }) => {
   }, []);
   const [showRealApp, setShowRealApp] = useState(false);
 
-  const onDone = () => {
+  const onDone = async () => {
     setAnsArray((prev) => [...prev, ans]);
 
     updateSeverity(user.user.email, [...ansArray, ans]);
-
+    await AsyncStorage.setItem("user", JSON.stringify(user.user));
     navigation.navigate("Tabs");
   };
   const renderDoneButton = () => {

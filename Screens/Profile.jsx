@@ -11,18 +11,23 @@ import {
   Button,
   Image,
 } from "react-native";
-
+import { AsyncStorage } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
-import React, { useState, useEffect ,useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faAngleRight, faPen } from "@fortawesome/free-solid-svg-icons";
-import { faComment } from "@fortawesome/free-regular-svg-icons";
+import {
+  faAngleRight,
+  faPen,
+  faRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
+// import { faRight } from "@fortawesome/free-regular-svg-icons";
 import * as DocumentPicker from "expo-document-picker";
-import { storageRef,storage } from "../firebase/firebase";
+import { storageRef, storage } from "../firebase/firebase";
 import * as ExpoFileSystem from "expo-file-system";
 import { connect } from "react-redux";
 import { getprofile, updateImage } from "../Axios/user.axios";
 import { updateTopic } from "../Axios/test.axios";
+import { setUser } from "../actions";
 const Profile = ({ user, navigation }) => {
   const [comment, setComment] = useState([]);
   const [post, setPost] = useState([]);
@@ -64,7 +69,7 @@ const Profile = ({ user, navigation }) => {
       name: result.name,
       blob: blob,
     });
-    refRBSheet.current.close()
+    refRBSheet.current.close();
   };
   const imgSave = async () => {
     if (fileResponse.name) {
@@ -72,14 +77,15 @@ const Profile = ({ user, navigation }) => {
       const snapshot = await ref.put(fileResponse.blob);
       var url = await snapshot.ref.getDownloadURL();
       console.log(url, "url");
-      
+
       updateImage(user.user.email, url);
-      var imageRef = storage.refFromURL(userProfile.image)
-      imageRef.delete().then(() => {
-        
-      }).catch((error) => {
-        console.log(error);
-      });
+      var imageRef = storage.refFromURL(userProfile.image);
+      imageRef
+        .delete()
+        .then(() => {})
+        .catch((error) => {
+          console.log(error);
+        });
       setFileResponse(null);
     } else {
       url = "NULL";
@@ -95,16 +101,30 @@ const Profile = ({ user, navigation }) => {
     setRefreshing(false);
   };
   const deleteImage = () => {
-    var imageRef = storage.refFromURL(userProfile.image)
-    imageRef.delete().then(() => {
-      var img = null
-      updateImage(user.user.email,img)
-      setFileResponse(null)
-      refRBSheet.current.close()
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
+    var imageRef = storage.refFromURL(userProfile.image);
+    imageRef
+      .delete()
+      .then(() => {
+        var img = null;
+        updateImage(user.user.email, img);
+        setFileResponse(null);
+        refRBSheet.current.close();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("user");
+      setUser(null)
+      navigation.push('Login')
+    } catch (err) {
+      console.log('====================================');
+      console.log(err);
+      console.log('====================================');
+    }
+  };
   return (
     <>
       {user && (
@@ -120,7 +140,7 @@ const Profile = ({ user, navigation }) => {
                 style={{ width: "100%", height: "100%", borderRadius: 100 }}
                 source={{
                   uri:
-                    userProfile && userProfile.image != null 
+                    userProfile && userProfile.image != null
                       ? userProfile.image
                       : "https://as2.ftcdn.net/v2/jpg/03/49/49/79/1000_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg",
                 }}
@@ -156,12 +176,15 @@ const Profile = ({ user, navigation }) => {
               </TouchableOpacity>
             </View>
             {fileResponse ? (
-              <View style={{flexDirection:'row',marginTop:10}}>
-                <TouchableOpacity style={{padding:10}} onPress={() => setFileResponse(null)}>
-                  <Text style={{color:"#3678ad"}}>Cancel</Text>
+              <View style={{ flexDirection: "row", marginTop: 10 }}>
+                <TouchableOpacity
+                  style={{ padding: 10 }}
+                  onPress={() => setFileResponse(null)}
+                >
+                  <Text style={{ color: "#3678ad" }}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity  style={{padding:10}} onPress={imgSave}>
-                  <Text style={{color:"#3678ad"}}>Save</Text>
+                <TouchableOpacity style={{ padding: 10 }} onPress={imgSave}>
+                  <Text style={{ color: "#3678ad" }}>Save</Text>
                 </TouchableOpacity>
               </View>
             ) : null}
@@ -233,6 +256,28 @@ const Profile = ({ user, navigation }) => {
                   icon={faAngleRight}
                 />
               </TouchableOpacity>
+              <TouchableOpacity onPress={logout} style={styles.success}>
+                <FontAwesomeIcon
+                  style={{
+                    height: "100%",
+                    color: "#767676",
+                    marginRight: 20,
+                    width: "20%",
+                  }}
+                  icon={faRightFromBracket}
+                />
+                <Text>Log out</Text>
+                <FontAwesomeIcon
+                  style={{
+                    height: "100%",
+                    color: "#767676",
+                    marginLeft: "auto",
+                    width: "20%",
+                    marginTop: 8,
+                  }}
+                  icon={faAngleRight}
+                />
+              </TouchableOpacity>
             </View>
             <RBSheet
               ref={refRBSheet}
@@ -247,7 +292,23 @@ const Profile = ({ user, navigation }) => {
                 },
               }}
             >
-              <View style={{alignItems:'center',justifyContent:"flex-start",height:'100%'}}><TouchableOpacity onPress={handleDocumentSelection} style={{padding:20}}><Text style={{fontWeight:'500'}}>Change Image</Text></TouchableOpacity ><TouchableOpacity onPress={deleteImage} style={{padding:20}}><Text style={{fontWeight:'500'}}>Delete Image</Text></TouchableOpacity></View>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  height: "100%",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handleDocumentSelection}
+                  style={{ padding: 20 }}
+                >
+                  <Text style={{ fontWeight: "500" }}>Change Image</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteImage} style={{ padding: 20 }}>
+                  <Text style={{ fontWeight: "500" }}>Delete Image</Text>
+                </TouchableOpacity>
+              </View>
             </RBSheet>
           </View>
         </ScrollView>
